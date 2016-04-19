@@ -77,11 +77,11 @@ namespace FiftyProtons.LogicalActivityCorrelation.Mvc.Middleware
 
 			// Get or create the request activity Id.
 			Guid requestActivityId =
-				GetActivityIdFromHeader(context)	// First try for activity Id from header.
+				GetActivityIdFromHeader(context)			// First try for activity Id from header.
 				??
 				GetActivityIdFromTraceIdentifier(context)	// Fall back to ASP.NET's activity Id.
 				??
-				Guid.NewGuid();						// Otherwise, create a new activity.
+				Guid.NewGuid();								// Otherwise, create a new activity.
 
 			requestCorrelationManager.ActivityId = requestActivityId;
 			context.TraceIdentifier = requestActivityId.ToString();
@@ -89,13 +89,13 @@ namespace FiftyProtons.LogicalActivityCorrelation.Mvc.Middleware
 			try
 			{
 				await _nextMiddleware(context);
-
-				context.Response.Headers[_headerName] = requestActivityId.ToString();
 			}
 			finally
 			{
 				if (_setCurrentCorrelationManager)
 					ActivityCorrelationManager.Current = previousCorrelationManager;
+					
+				context.Response.Headers[_headerName] = requestActivityId.ToString();
 			}
 		}
 
